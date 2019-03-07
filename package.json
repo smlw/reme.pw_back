@@ -1,0 +1,38 @@
+{
+  "name": "apc-nodejs",
+  "version": "1.0.0",
+  "main": "app.js",
+  "author": "Alexander Samoylov <smlwmy@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "mocha \"./tests/**/*.test.js\""
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
+    "eslint": "^5.3.0",
+    "eslint-plugin-node": "^7.0.1",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.9"
+  },
+  "engines": {
+    "node": ">=9.0.0"
+  },
+  "dependencies": {
+    "async": "^2.6.1",
+    "bcrypt-nodejs": "^0.0.3",
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^6.2.0",
+    "express": "5.0.0-alpha.2",
+    "express-session": "^1.15.6",
+    "fs": "^0.0.1-security",
+    "http2": "^3.3.7",
+    "mongo": "^0.1.0",
+    "mongoose": "^5.4.2",
+    "spdy": "^4.0.0"
+  }
+}
