@@ -24,6 +24,7 @@
     "async": "^2.6.1",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.18.3",
+    "connect-mongo": "^2.0.3",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
@@ -33,6 +34,10 @@
     "http2": "^3.3.7",
     "mongo": "^0.1.0",
     "mongoose": "^5.4.2",
+    "mongoose-findorcreate": "^3.0.0",
+    "multer": "^1.4.1",
+    "passport": "^0.4.0",
+    "passport-vkontakte": "^0.3.2",
     "spdy": "^4.0.0"
   }
 }
