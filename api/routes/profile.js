@@ -22,7 +22,7 @@ router.get('/profiles', async (req, res) => {
         })
       }
       res.status(200).json(response)
-      console.log(response)
+      // console.log(response)
     })
 })
 
@@ -31,7 +31,7 @@ router.get('/profile/:profileId', async (req, res) => {
   Profile.findById(id)
     .exec()
     .then(doc => {
-      console.log("From database", doc)
+      // console.log("From database", doc)
       if (doc) {
         res.status(200).json({
             profile: doc

@@ -8,7 +8,7 @@ const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const app = express();
-app.use(cors())
+app.use(cors());
 // DATABASE
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -54,14 +54,26 @@ passport.use(new VKontakteStrategy(
       // scope), token lifetime, etc.
       // Here, we have a hypothetical `User` class which does what it says.
       console.log(profile)
-      User.findOrCreate(
-        { 
-          vkontakteId: profile.id,
-          displayName: profile.displayName,
-          photoUrl: profile.photos[0].value
-        })
-        .then((user) => done(null, user))
-        .catch(done);
+      User.findOne({
+        vkontakteId: profile.id
+      }, (err, user) => {
+        if (err) {
+          return done(err);
+        }
+        if (!user) {
+          user = new User ({
+            vkontakteId: profile.id,
+            displayName: profile.displayName,
+            photoUrl: profile.photos[0].value
+          });
+          user.save(() => {
+            if (err) console.log(err);
+            return done(null, user);
+          })
+        } else {
+            return done(err, user);
+        }
+      })
     }
 ));
 
@@ -74,20 +86,34 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-
 //This function will pass callback, scope and request new token
 app.get('/auth/vkontakte', passport.authenticate('vkontakte'));
 
 app.get('/auth/vkontakte/callback',
   passport.authenticate('vkontakte', {
-    successRedirect: '/',
-    failureRedirect: '/login' 
+    successRedirect: 'http://localhost:8080/dashboard',
+    failureRedirect: 'http://localhost:8080/auth' 
   })
 );
 
 app.get('/', function(req, res) {
-    //Here you have an access to req.user
-    res.json(req.user);
+  res.set({
+    'Access-Control-Allow-Origin': 'http://localhost:8080',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+    'Access-Control-Allow-Headers': 'X-Requested-With,content-type',
+    'Access-Control-Allow-Credentials': true
+  })
+  const user = req.user
+
+  if(user){
+    res.json({
+      user: user
+    });
+  } else {
+    res.json({
+      message: 'Пользователь не аутентифицирован'
+    })
+  }
 });
 
 // // ROUTERS
