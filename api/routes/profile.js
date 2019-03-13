@@ -7,31 +7,32 @@ const upload = multer({dest: 'uploads/'});
 const models = require('../models');
 const Profile = models.Profile;
 
+// Выгружаем все профайлы юзера
 router.get('/', async (req, res) => {
-  console.log(req.session)
-  res.json({
-    message: 'from profile',
-    info: req.user
+  await models.Profile.find({
+    owner: req.user.id
   })
-  // console.log(req.user)
-  // await models.Profile.find({
-  //   owner: "5c83fe4a08bab53458a7c337"
-  // })
-  //   .exec()
-  //   .then(docs => {
-  //     const response = {
-  //       count: docs.length,
-  //       profiles: docs.map(doc => {
-  //         return {
-  //           id: doc._id,
-  //           fullName: doc.fullName,
-  //           birthday: doc.birthday
-  //         }
-  //       })
-  //     }
-  //     res.status(200).json(response)
-  //     // console.log(response)
-  //   })
+    .exec()
+    .then(docs => {
+      const response = {
+        message: `Количество загруженных профайлов: ${docs.length}`,
+        profiles: docs.map(doc => {
+          return {
+            id: doc._id,
+            fullName: doc.fullName,
+            birthday: doc.birthday
+          }
+        })
+      }
+      res.status(200).json(response)
+      // console.log(response)
+    })
+    .catch(err => {
+      res.json({
+        message: 'Ошибка при загрузке профайлов.'
+      })
+      throw err
+    })
 })
 
 router.get('/:profileId', async (req, res) => {
@@ -66,7 +67,7 @@ router.post('/add', async (req, res, next) => {
     .then(result => {
       res.status(201).json({
         status: true,
-        message: 'Новый профайл успешно создан',
+        message: 'Новый профайл успешно создан!',
         createdProfile: {
           fullName: result.fullName,
           birthday: result.birthday,
@@ -80,8 +81,9 @@ router.post('/add', async (req, res, next) => {
     .catch(err => {
       res.status(500).json({
         status: false,
-        error: err
+        message: `Ошибка! Код ошибки: ${err.code}. Повторите позже!`,
       })
+      throw err
     })
 })
 
