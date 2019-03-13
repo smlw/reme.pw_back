@@ -4,11 +4,15 @@ const mongoose = require("mongoose");
 
 
 router.get('/', async (req, res) => {
-  console.log(req.session)
-
-  res.json({
-      user: req.user
-  })
+  if(req.user){
+    res.json({
+        user: req.user
+    })
+  } else {
+    res.json({
+      user: null
+    })
+  }
 })
 
 module.exports = router;

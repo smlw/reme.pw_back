@@ -103,8 +103,8 @@ app.get('/auth/vkontakte', passport.authenticate('vkontakte'));
 
 app.get('/auth/vkontakte/callback',
   passport.authenticate('vkontakte', {
-    successRedirect: 'http://localhost:8080/dashboard',
-    failureRedirect: 'http://localhost:8080/auth'
+    successRedirect: 'http://localhost:8080/',
+    failureRedirect: 'http://localhost:8080/'
   })
 );
 

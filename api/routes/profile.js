@@ -7,7 +7,7 @@ const upload = multer({dest: 'uploads/'});
 const models = require('../models');
 const Profile = models.Profile;
 
-router.get('/profiles', async (req, res) => {
+router.get('/', async (req, res) => {
   console.log(req.session)
   res.json({
     message: 'from profile',
