@@ -7,14 +7,13 @@ const VKontakteStrategy = require('passport-vkontakte').Strategy;
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const uuid = require("uuid");
 const app = express();
 app.use(cors({ origin: ["http://localhost:8080"], credentials: true }));
 app.use((req, res, next) => {
   res.set({
     'Access-Control-Allow-Origin': 'http://localhost:8080',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, X-AUTHENTICATION, X-IP, Content-Type, Accept',
     'Access-Control-Allow-Credentials': true
   })
   next();
@@ -47,6 +46,7 @@ app.use(
       mongooseConnection: mongoose.connection
     }),
     cookie: {
+      secure : false,
       maxAge: 24*60*60*1000 
     }
   })
@@ -109,40 +109,12 @@ app.get('/auth/vkontakte/callback',
 );
 
 
-app.get('/', function(req, res) {
-  req.session.sessionUUID = uuid.v4();
-  res.json(req.session)
-  // const user = req.user
-  // console.log(user)
-  // if(user){
-  //   res.json({
-  //     user: user
-  //   });
-  // } else {
-  //   res.json({
-  //     message: 'Пользователь не аутентифицирован'
-  //   })
-  // }
-});
+const loggedin = (req, res, next) => req.isAuthenticated() ? next() : res.json('fail auth')
 
-app.post("/getUserInfo", (req, res, next) => {
-  console.log('req.session.sessionUUID')
-  console.log(req.session.sessionUUID)
-  console.log('req.body.sessionUUID')
-  console.log(req.body.sessionUUID)
-
-  if(req.body.sessionUUID != req.session.sessionUUID) {
-      return res.status(500).json({ message: "The data in the session does not match!" });
-  } else {
-    res.json({
-      user: req.user
-    });
-  }
-});
-
-// // ROUTERS
+// ROUTERS
 const routes = require('./api/routes');
-app.use('/api', routes.profile);
+app.use('/api/profile', loggedin, routes.profile);
+app.use('/api/getUserProfile', routes.userProfile)
 
 // SERVER HTTPS
 // spdy

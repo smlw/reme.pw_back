@@ -8,28 +8,33 @@ const models = require('../models');
 const Profile = models.Profile;
 
 router.get('/profiles', async (req, res) => {
-  console.log(req.user)
-  await models.Profile.find({
-    owner: "5c83fe4a08bab53458a7c337"
+  console.log(req.session)
+  res.json({
+    message: 'from profile',
+    info: req.user
   })
-    .exec()
-    .then(docs => {
-      const response = {
-        count: docs.length,
-        profiles: docs.map(doc => {
-          return {
-            id: doc._id,
-            fullName: doc.fullName,
-            birthday: doc.birthday
-          }
-        })
-      }
-      res.status(200).json(response)
-      // console.log(response)
-    })
+  // console.log(req.user)
+  // await models.Profile.find({
+  //   owner: "5c83fe4a08bab53458a7c337"
+  // })
+  //   .exec()
+  //   .then(docs => {
+  //     const response = {
+  //       count: docs.length,
+  //       profiles: docs.map(doc => {
+  //         return {
+  //           id: doc._id,
+  //           fullName: doc.fullName,
+  //           birthday: doc.birthday
+  //         }
+  //       })
+  //     }
+  //     res.status(200).json(response)
+  //     // console.log(response)
+  //   })
 })
 
-router.get('/profile/:profileId', async (req, res) => {
+router.get('/:profileId', async (req, res) => {
   const id = req.params.profileId
   Profile.findById(id)
     .exec()
@@ -47,7 +52,7 @@ router.get('/profile/:profileId', async (req, res) => {
     })
 })
 
-router.post('/profile/add', async (req, res, next) => {
+router.post('/add', async (req, res, next) => {
   const profile = new Profile({
     _id: new mongoose.Types.ObjectId(),
     owner: req.body.owner,
