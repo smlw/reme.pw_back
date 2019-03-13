@@ -114,7 +114,7 @@ const loggedin = (req, res, next) => req.isAuthenticated() ? next() : res.json('
 // ROUTERS
 const routes = require('./api/routes');
 app.use('/api/profile', loggedin, routes.profile);
-app.use('/api/getUserProfile', routes.userProfile)
+app.use('/api/user', routes.userProfile)
 
 // SERVER HTTPS
 // spdy

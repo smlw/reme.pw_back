@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 
 
-router.get('/', async (req, res) => {
+router.get('/getUserProfile', async (req, res) => {
   if(req.user){
     res.json({
         user: req.user
@@ -13,6 +13,11 @@ router.get('/', async (req, res) => {
       user: null
     })
   }
+})
+
+router.get('/logout', async (req, res) => {
+  req.logout();
+  req.session.destroy();
 })
 
 module.exports = router;
