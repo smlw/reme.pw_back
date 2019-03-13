@@ -8,7 +8,10 @@ const models = require('../models');
 const Profile = models.Profile;
 
 router.get('/profiles', async (req, res) => {
-  Profile.find()
+  console.log(req.user)
+  await models.Profile.find({
+    owner: "5c83fe4a08bab53458a7c337"
+  })
     .exec()
     .then(docs => {
       const response = {

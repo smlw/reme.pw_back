@@ -7,8 +7,20 @@ const VKontakteStrategy = require('passport-vkontakte').Strategy;
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const uuid = require("uuid");
 const app = express();
-app.use(cors());
+app.use(cors({ origin: ["http://localhost:8080"], credentials: true }));
+app.use((req, res, next) => {
+  res.set({
+    'Access-Control-Allow-Origin': 'http://localhost:8080',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+    'Access-Control-Allow-Credentials': true
+  })
+  next();
+});
+
+
 // DATABASE
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -28,12 +40,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(
   session({
-      secret: 'secret',
-      resave: true,
-      saveUninitialized: false,
-      store: new MongoStore({
-        mongooseConnection: mongoose.connection
-      })
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: false,
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection
+    }),
+    cookie: {
+      maxAge: 24*60*60*1000 
+    }
   })
 );
 app.use(passport.initialize());
@@ -43,16 +58,11 @@ const User = require('./api/models').User
 
 passport.use(new VKontakteStrategy(
     {
-        clientID:     '6892318', // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'
-        clientSecret: 'xpLAz80rcCDNNJwfwoVm',
-        callbackURL:  "http://localhost:3001/auth/vkontakte/callback"
+      clientID:     '6892318', // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'
+      clientSecret: 'xpLAz80rcCDNNJwfwoVm',
+      callbackURL:  "http://localhost:3001/auth/vkontakte/callback"
     },
     function myVerifyCallbackFn(accessToken, refreshToken, params, profile, done) {
-      // Now that we have user's `profile` as seen by VK, we can
-      // use it to find corresponding database records on our side.
-      // Also we have user's `params` that contains email address (if set in 
-      // scope), token lifetime, etc.
-      // Here, we have a hypothetical `User` class which does what it says.
       console.log(profile)
       User.findOne({
         vkontakteId: profile.id
@@ -86,40 +96,53 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
+// const loggedin = (req, res, next) => req.isAuthenticated() ? next() : res.json('Not Auth')
+
 //This function will pass callback, scope and request new token
 app.get('/auth/vkontakte', passport.authenticate('vkontakte'));
 
 app.get('/auth/vkontakte/callback',
   passport.authenticate('vkontakte', {
     successRedirect: 'http://localhost:8080/dashboard',
-    failureRedirect: 'http://localhost:8080/auth' 
+    failureRedirect: 'http://localhost:8080/auth'
   })
 );
 
-app.get('/', function(req, res) {
-  res.set({
-    'Access-Control-Allow-Origin': 'http://localhost:8080',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-    'Access-Control-Allow-Headers': 'X-Requested-With,content-type',
-    'Access-Control-Allow-Credentials': true
-  })
-  const user = req.user
 
-  if(user){
-    res.json({
-      user: user
-    });
+app.get('/', function(req, res) {
+  req.session.sessionUUID = uuid.v4();
+  res.json(req.session)
+  // const user = req.user
+  // console.log(user)
+  // if(user){
+  //   res.json({
+  //     user: user
+  //   });
+  // } else {
+  //   res.json({
+  //     message: 'Пользователь не аутентифицирован'
+  //   })
+  // }
+});
+
+app.post("/getUserInfo", (req, res, next) => {
+  console.log('req.session.sessionUUID')
+  console.log(req.session.sessionUUID)
+  console.log('req.body.sessionUUID')
+  console.log(req.body.sessionUUID)
+
+  if(req.body.sessionUUID != req.session.sessionUUID) {
+      return res.status(500).json({ message: "The data in the session does not match!" });
   } else {
     res.json({
-      message: 'Пользователь не аутентифицирован'
-    })
+      user: req.user
+    });
   }
 });
 
 // // ROUTERS
 const routes = require('./api/routes');
 app.use('/api', routes.profile);
-// app.use('/', routes.index);
 
 // SERVER HTTPS
 // spdy
