@@ -5,6 +5,7 @@ const schema = new Schema({
   owner:      {type: String, required: true},
   fullName:   {type: String, required: true},
   marital:    {type: String, required: false},
+  avatar:     {type: String, required: false},
   birthday:   {type: Date, required: false},
   profession: {type: String},
   sections: [{

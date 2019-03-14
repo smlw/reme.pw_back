@@ -20,7 +20,8 @@ router.get('/', async (req, res) => {
           return {
             id: doc._id,
             fullName: doc.fullName,
-            birthday: doc.birthday
+            birthday: doc.birthday,
+            avatar: doc.avatar,
           }
         })
       }
@@ -59,6 +60,7 @@ router.post('/add', async (req, res, next) => {
     owner: req.body.owner,
     fullName: req.body.fullName,
     birthday: req.body.birthday,
+    avatar: req.body.avatar,
     sections: req.body.sections
   });
 
@@ -71,6 +73,7 @@ router.post('/add', async (req, res, next) => {
         createdProfile: {
           fullName: result.fullName,
           birthday: result.birthday,
+          id: result._id,
           request: {
             type: 'GET',
             url: "http://localhost:8080/profile/" + result._id
