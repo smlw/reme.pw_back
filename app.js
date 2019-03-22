@@ -7,6 +7,7 @@ const VKontakteStrategy = require('passport-vkontakte').Strategy;
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const jwt = require('jsonwebtoken');
 const app = express();
 app.use(cors({ origin: ["http://localhost:8080"], credentials: true }));
 app.use((req, res, next) => {
@@ -47,8 +48,10 @@ app.use(
     }),
     cookie: {
       secure : false,
-      maxAge: 24*60*60*1000 
-    }
+      maxAge: 24*60*60*1000,
+      httpOnly: false
+    },
+    key: 'session'
   })
 );
 app.use(passport.initialize());
@@ -63,7 +66,7 @@ passport.use(new VKontakteStrategy(
       callbackURL:  "http://localhost:3001/auth/vkontakte/callback"
     },
     function myVerifyCallbackFn(accessToken, refreshToken, params, profile, done) {
-      console.log(profile)
+      // console.log(accessToken)
       User.findOne({
         vkontakteId: profile.id
       }, (err, user) => {
@@ -96,8 +99,6 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-// const loggedin = (req, res, next) => req.isAuthenticated() ? next() : res.json('Not Auth')
-
 //This function will pass callback, scope and request new token
 app.get('/auth/vkontakte', passport.authenticate('vkontakte'));
 
@@ -108,13 +109,13 @@ app.get('/auth/vkontakte/callback',
   })
 );
 
-
 const loggedin = (req, res, next) => req.isAuthenticated() ? next() : res.json('fail auth')
 
 // ROUTERS
 const routes = require('./api/routes');
 app.use('/api/profile', loggedin, routes.profile);
-app.use('/api/user', routes.userProfile)
+app.use('/api/user', routes.userProfile);
+app.use('/api/interest', routes.interest)
 
 // SERVER HTTPS
 // spdy
