@@ -13,9 +13,25 @@ const schema = new Schema({
       icon      : { type: String },
       color     : { type: String },
       textColor : { type: String },
+      chips: [{
+        id: Schema.Types.ObjectId,
+        chipName  : { type: String },
+        color     : { type: String },
+        close     : { type: Boolean },
+        isActual  : { type: Boolean }
+      }]
     }],
     default: [{
-      name: 'Музыка'
+      name: 'Музыка',
+      icon: 'fa-music',
+      color: 'indigo',
+      textColor: 'white',
+      chips: [{
+        chipName: 'Поп-музыка',
+        color: 'indigo',
+        close: false,
+        isActual: true
+      }]
     }]
   }
 }, {

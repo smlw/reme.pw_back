@@ -3,10 +3,9 @@ const router = express.Router();
 const mongoose = require("mongoose");
 
 const models = require('../models');
-const Interest = models.Interest;
 
 router.get('/', async (req, res) => {
-  Interest.find()
+  models.Interest.find()
   .exec()
   .then(docs => {
     console.log('interests docs')
