@@ -1,0 +1,10 @@
+    interest: {
+      $elemMatch: {
+        _id: req.body.interestID,
+        chips: {
+          $elemMatch: {
+            _id: req.body.chipID
+          }
+        }
+      }
+    }

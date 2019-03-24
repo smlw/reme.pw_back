@@ -22,6 +22,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/remove', (req, res) => {
+  // remove chips
   console.log('req.body')
   console.log(req.body)
   models.Interest.update({
@@ -35,33 +36,53 @@ router.post('/remove', (req, res) => {
       }
     }
   })
-    .then(doc => {
-      console.log(doc)
+    .then((result) => {
+      res.status(200).json({
+        message: 'Удаление прошло успешно.'
+      })
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: 'Ошибка удаления.'
+      })
+    })
+})
+
+router.post('/add', async (req, res, next) => {
+  console.log(req.body)
+  models.Interest.updateOne({
+    profile: req.body.profileID,
+    'interest._id' : req.body.interestID
+  }, {
+    $push: {
+      'interest.$.chips':  {
+        chipName: req.body.chipText
+      }
+    }
+  })
+    .then(result => {
+      res.status(200).json({
+        ok: result
+      })
     })
 
+  // if (!profile) {
+  //   await models.Interest.create({
+  //     owner: "5c8a86dd319bb02764965267",
+  //     profile: "5c908729d6b2240b440019b2"
+  //   })
+  // } else {
+  //   await models.Interest.updateOne(
+  //     { profile: "5c908729d6b2240b440019b2" },
+  //     { 
+  //       $push : {
+  //         interest: {
+  //           name: 'Зомби'
+  //         }
+  //       }
+  //     }
+  //   )
+  // }
 })
-// router.post('/add', async (req, res, next) => {
-//   const profile = await models.Interest.findOne({
-//     profile: "5c908729d6b2240b440019b2"
-//   })
-
-//   if (!profile) {
-//     await models.Interest.create({
-//       owner: "5c8a86dd319bb02764965267",
-//       profile: "5c908729d6b2240b440019b2"
-//     })
-//   } else {
-//     await models.Interest.updateOne(
-//       { profile: "5c908729d6b2240b440019b2" },
-//       { 
-//         $push : {
-//           interest: {
-//             name: 'Зомби'
-//           }
-//         }
-//       }
-//     )
-//   }
-// })
 
 module.exports = router;

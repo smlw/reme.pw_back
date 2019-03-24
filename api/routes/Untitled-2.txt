@@ -1,0 +1,34 @@
+"interest" : [ 
+        {
+            "name" : "Музыка",
+            "_id" : ObjectId("5c963beef709411f30f4301c"),
+            "icon" : "fa-music",
+            "color" : "indigo",
+            "textColor" : "white",
+            "chips" : [ 
+                {
+                    "_id" : ObjectId("5c963beef709411f30f4301d"),
+                    "chipName" : "Поп-музыка",
+                    "color" : "indigo",
+                    "close" : false,
+                    "isActual" : true
+                }
+            ]
+        },
+        {
+            "name" : "Кино",
+            "_id" : ObjectId("5c963beef709411f30f4301c"),
+            "icon" : "fa-music",
+            "color" : "indigo",
+            "textColor" : "white",
+            "chips" : [ 
+                {
+                    "_id" : ObjectId("5c963beef709411f30f4301a"),
+                    "chipName" : "Комеддии",
+                    "color" : "indigo",
+                    "close" : false,
+                    "isActual" : true
+                }
+            ]
+        }
+    ],

@@ -16,9 +16,7 @@ const schema = new Schema({
       chips: [{
         id: Schema.Types.ObjectId,
         chipName  : { type: String },
-        color     : { type: String },
-        close     : { type: Boolean },
-        isActual  : { type: Boolean }
+        color     : { type: String }
       }]
     }],
     default: [{
@@ -28,9 +26,7 @@ const schema = new Schema({
       textColor: 'white',
       chips: [{
         chipName: 'Поп-музыка',
-        color: 'indigo',
-        close: false,
-        isActual: true
+        color: 'indigo'
       }]
     }]
   }
