@@ -7,6 +7,10 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Profile'
   },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   interest: {
     type: [{
       name      : { type: String, default: 'Value' },

@@ -37,7 +37,6 @@ router.get('/', async (req, res) => {
 router.get('/:profileId', async (req, res) => {
   const id = req.params.profileId
   models.Profile.findById(id)
-  .populate('interest')
   .exec(function(err, profile) {
     if(err) console.log(err)
     res.status(200).json({
@@ -59,7 +58,8 @@ router.post('/add', async (req, res, next) => {
   });
   const interest = new models.Interest({
     _id: interestID,
-    profile: profileID
+    profile: profileID,
+    owner: req.body.owner
   })
 
   interest
