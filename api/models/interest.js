@@ -19,8 +19,7 @@ const schema = new Schema({
       textColor : { type: String },
       chips: [{
         id: Schema.Types.ObjectId,
-        chipName  : { type: String },
-        color     : { type: String }
+        chipName  : { type: String }
       }]
     }],
     default: [{
@@ -29,8 +28,7 @@ const schema = new Schema({
       color: 'indigo',
       textColor: 'white',
       chips: [{
-        chipName: 'Поп-музыка',
-        color: 'indigo'
+        chipName: 'Поп-музыка'
       }]
     }]
   }
