@@ -40,7 +40,6 @@ router.get('/:profileId', async (req, res) => {
   .populate('interest')
   .exec(function(err, profile) {
     if(err) console.log(err)
-    console.log(profile)
     res.status(200).json({
       profile
     })
@@ -50,7 +49,6 @@ router.get('/:profileId', async (req, res) => {
 router.post('/add', async (req, res, next) => {
   const interestID = new mongoose.Types.ObjectId()
   const profileID = new mongoose.Types.ObjectId()
-  console.log(interestID, profileID)
   const profile = new Profile({
     _id: profileID,
     owner: req.body.owner,
